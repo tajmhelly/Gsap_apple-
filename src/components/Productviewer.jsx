@@ -1,16 +1,15 @@
-import React, { use } from 'react'
-import useMacbookStore from '../store'
+import {React,  useRefModelswicher } from 'react';
+import useMacbookStore from '../store';
 import clsx from 'clsx';
 import { Canvas } from '@react-three/fiber';
-import {Box,OrbitControls} from '@react-three/drei'
-import Macbook14 from './models/Macbook-14';
-import Macbook16 from './models/Macbook-16';
+import {Box,OrbitControls} from '@react-three/drei';
 import Studiolight from './three/Studiolight.jsx';
-import Modelswitcher from './three/Modelswitcher.jsx';
+import Modelswitcher from './three/Modelswicher.jsx';
+import { useMediaQuery } from 'react-responsive';
 
 const Productviewer = () => {
   const {color, scale , setColor, setScale} = useMacbookStore();
-  const ismobile = useMediaQuery('(max-width: 1024px)');
+  const ismobile = useMediaQuery({ maxWidth: 768 }) ;
 
 
   return (
@@ -50,11 +49,7 @@ const Productviewer = () => {
             </div>
             <Canvas id='canvas' camera={{position:[0,2,5], fov:50 ,near:2 ,far:100}}>
               <Studiolight/>
-              {scale === '0.06' ? (
-                <Macbook14 scale={0.06} position={[0,0,0]} />
-              ) : (
-                <Macbook16 scale={0.08} position={[0,0,0]} />
-              )}
+              
               <Modelswitcher  scale={ismobile ? scale -0.03 : scale} ismobile={ismobile}/>
             </Canvas>
         </section>
