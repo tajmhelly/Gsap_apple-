@@ -26,6 +26,11 @@ import useMacbookStore from '../../store';
 
 const noChangeParts = ['screen', 'lens'];
 
+/**
+ * Renders a GLTF MacBook model whose screen displays a video texture and whose other parts are tinted from the store color.
+ * @param {object} props - Props forwarded to the root <group> element.
+ * @returns {JSX.Element} A <group> containing the MacBook meshes; the screen mesh uses the provided video texture and other meshes are updated to the current store color (excluding 'screen' and 'lens').
+ */
 export default function Macbook(props) {
   const {color, texture} = useMacbookStore()
   const { nodes, materials, scene } = useGLTF('/models/macbook.glb')

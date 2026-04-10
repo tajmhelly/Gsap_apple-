@@ -13,6 +13,13 @@ import {Color} from 'three'
 import useMacbookStore from '../../store';
 import { noChangeParts } from '../../constants/index.js';
 
+/**
+ * Render a 3D MacBook model with a configurable body color and a textured screen.
+ *
+ * Loads a GLB model and applies the store-provided color to most mesh materials while using a separate image texture for the screen; any props passed to this component are spread onto the root group.
+ * @param {Object} props - Props to be spread onto the root <group> element.
+ * @returns {JSX.Element} The assembled <group> containing the MacBook meshes and materials.
+ */
 export default function Macbook16(props) {
   const {color} = useMacbookStore();
   const { nodes, materials, scene } = useGLTF('/models/macbook-16.glb')
