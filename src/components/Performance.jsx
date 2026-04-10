@@ -1,8 +1,11 @@
 import { useRef } from "react";
 import { useGSAP } from "@gsap/react";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { performanceImages, performanceImgPositions } from "../constants/index.js";
 import {useMediaQuery} from "react-responsive";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const Performance = () => {
     const isMobile = useMediaQuery({ query: "(max-width: 1024px)" });
