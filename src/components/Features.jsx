@@ -47,7 +47,6 @@ const ModelScroll = () => {
                 start: 'top top',
                 end: 'bottom  top',
                 scrub: 1,
-                pin: true,
             }
         });
 
