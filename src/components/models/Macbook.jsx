@@ -7,12 +7,57 @@ Source: https://sketchfab.com/3d-models/macbook-pro-m3-16-inch-2024-8e34fc2b3031
 Title: macbook pro M3 16 inch 2024
 */
 
-import React from 'react'
-import { useGLTF } from '@react-three/drei'
+/**
+ * Macbook Component
+ * 
+ * Renders a 3D MacBook model with:
+ * - Color customization via Zustand store
+ * - Video texture on screen (loops automatically)
+ * - Material updates based on color state
+ * 
+ * Note: The video texture requires ClampToEdgeWrapping and flipY: false
+ * to display at full resolution without distortion or repetition.
+ */
 
-export default function Model(props) {
-  const { nodes, materials } = useGLTF('/models/macbook.glb')
-  const  texture = useTexture('/screen.png');
+import React, { useEffect } from 'react'
+import { useGLTF, useVideoTexture } from '@react-three/drei'
+import { Color, ClampToEdgeWrapping } from 'three'
+import useMacbookStore from '../../store';
+
+const noChangeParts = ['screen', 'lens'];
+
+/**
+ * Renders a GLTF MacBook model whose screen displays a video texture and whose other parts are tinted from the store color.
+ * @param {object} props - Props forwarded to the root <group> element.
+ * @returns {JSX.Element} A <group> containing the MacBook meshes; the screen mesh uses the provided video texture and other meshes are updated to the current store color (excluding 'screen' and 'lens').
+ */
+export default function Macbook(props) {
+  const {color, texture} = useMacbookStore()
+  const { nodes, materials, scene } = useGLTF('/models/macbook.glb')
+
+  // Load video texture for MacBook screen
+  const screen = useVideoTexture(texture)
+
+  // Configure texture wrapping to prevent video stretching/tiling
+  useEffect(() => {
+    if (screen) {
+      screen.wrapS = ClampToEdgeWrapping;
+      screen.wrapT = ClampToEdgeWrapping;
+      screen.flipY = false;
+    }
+  }, [screen]);
+
+  // Update mesh colors when color state changes (excludes screen and lens)
+  useEffect(() => {
+    scene.traverse((child) => {
+      if (child.isMesh) {
+        if (!noChangeParts.includes(child.name)) {
+          child.material.color = new Color(color);
+        }
+      }
+    });
+  }, [color, scene]);
+  
   return (
     <group {...props} dispose={null}>
       <mesh geometry={nodes.Object_10.geometry} material={materials.PaletteMaterial001} rotation={[Math.PI / 2, 0, 0]} />
@@ -32,8 +77,8 @@ export default function Model(props) {
       <mesh geometry={nodes.Object_82.geometry} material={materials.gMtYExgrEUqPfln} rotation={[Math.PI / 2, 0, 0]} />
       <mesh geometry={nodes.Object_96.geometry} material={materials.PaletteMaterial003} rotation={[Math.PI / 2, 0, 0]} />
       <mesh geometry={nodes.Object_107.geometry} material={materials.JvMFZolVCdpPqjj} rotation={[Math.PI / 2, 0, 0]} />
-      <mesh geometry={nodes.Object_123.geometry} material={materials.sfCQkHOWyrsLmor} rotation={[Math.PI / 2, 0, 0]} >
-        <meshBasicMaterial map={texture} />
+      <mesh geometry={nodes.Object_123.geometry} rotation={[Math.PI / 2, 0, 0]} >
+        <meshBasicMaterial map={screen} />
       </mesh>
        <mesh geometry={nodes.Object_127.geometry} material={materials.ZCDwChwkbBfITSW} rotation={[Math.PI / 2, 0, 0]} />
     </group>
